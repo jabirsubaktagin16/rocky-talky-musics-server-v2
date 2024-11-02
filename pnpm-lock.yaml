@@ -45,8 +45,8 @@ importers:
         specifier: ^4.21.1
         version: 4.21.1
       http-status:
-        specifier: ^2.0.0
-        version: 2.0.0
+        specifier: ^1.7.3
+        version: 1.7.3
       jsonwebtoken:
         specifier: ^9.0.2
         version: 9.0.2
@@ -868,8 +868,8 @@ packages:
     resolution: {integrity: sha512-FtwrG/euBzaEjYeRqOgly7G0qviiXoJWnvEH2Z1plBdXgbyjv34pHTSb9zoeHMyDy33+DWy5Wt9Wo+TURtOYSQ==}
     engines: {node: '>= 0.8'}
 
-  http-status@2.0.0:
-    resolution: {integrity: sha512-fmtDiMjseYigum9OwVYJD2RD6tRYV4tzRrT92/aLSOS2bNPvz3jx8aHFqJ4Nq4ZLydalwuyh2Q6VuHg7qbCbJQ==}
+  http-status@1.7.3:
+    resolution: {integrity: sha512-GS8tL1qHT2nBCMJDYMHGkkkKQLNkIAHz37vgO68XKvzv+XyqB4oh/DfmMHdtRzfqSJPj1xKG2TaELZtlCz6BEQ==}
     engines: {node: '>= 0.4.0'}
 
   https-proxy-agent@5.0.1:
@@ -2576,7 +2576,7 @@ snapshots:
       statuses: 2.0.1
       toidentifier: 1.0.1
 
-  http-status@2.0.0: {}
+  http-status@1.7.3: {}
 
   https-proxy-agent@5.0.1:
     dependencies:
