@@ -12,16 +12,16 @@ export type IProducts = {
     | 'guitars'
     | 'keyboards'
     | 'drums'
-    | 'wind'
-    | 'strings'
-    | 'dj'
-    | 'microphones'
-    | 'amplifiers'
-    | 'accessories'
-    | 'sheetmusic'
-    | 'orchestral'
-    | 'folk'
-    | 'electronic';
+    | 'violins'
+    | 'flutes'
+    | 'trumpets'
+    | 'cellos'
+    | 'ukuleles'
+    | 'harmonicas'
+    | 'banjos'
+    | 'mandolins'
+    | 'synthesizers'
+    | 'saxophones';
   stock: number;
   images: Array<string>;
   addedBy: Types.ObjectId | IUser;

@@ -13,7 +13,7 @@ const auth =
       if (!token) {
         throw new ApiError(
           httpStatus.UNAUTHORIZED,
-          'You are not authorized to access this'
+          'You are not authorized to access this',
         );
       }
 
