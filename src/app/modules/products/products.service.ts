@@ -104,6 +104,24 @@ const getAllProducts = async (
   };
 };
 
+const getNewProducts = async (): Promise<IGenericResponse<IProducts[]>> => {
+  // Sort by createdAt field in descending order (newest first) and limit to 10 products
+  const sortConditions: { [key: string]: SortOrder } = { createdAt: 'desc' }; // Sort by the newest created product
+
+  const result = await Products.find()
+    .sort(sortConditions) // Sort by the creation date
+    .limit(10); // Limit the results to 10 products
+
+  return {
+    meta: {
+      page: 1, // Optional: Can be set to 1 as it's only for display on home page
+      limit: 10, // Set limit to 10 since we're only fetching 10 products
+      total: result.length, // Total number of products returned
+    },
+    data: result,
+  };
+};
+
 const getSingleProduct = async (id: string): Promise<IProducts | null> => {
   const result = await Products.findById(id).populate('addedBy');
   return result;
@@ -157,6 +175,7 @@ const deleteProduct = async (
 export const ProductsService = {
   createProduct,
   getAllProducts,
+  getNewProducts,
   getSingleProduct,
   updateProduct,
   deleteProduct,

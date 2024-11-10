@@ -25,6 +25,7 @@ export type IProducts = {
   stock: number;
   images: Array<string>;
   addedBy: Types.ObjectId | IUser;
+  createdAt: string;
 };
 
 export type ProductsModel = Model<IProducts, Record<string, unknown>>;

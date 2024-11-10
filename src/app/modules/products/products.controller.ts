@@ -40,6 +40,18 @@ const getAllProducts = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getNewProducts = catchAsync(async (req: Request, res: Response) => {
+  const result = await ProductsService.getNewProducts();
+
+  sendResponse<IProducts[]>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'New Products retrieved successfully',
+    meta: result.meta,
+    data: result.data,
+  });
+});
+
 const getSingleProduct = catchAsync(async (req: Request, res: Response) => {
   const id = req.params.id;
 
@@ -85,6 +97,7 @@ const deleteProduct = catchAsync(async (req: Request, res: Response) => {
 export const ProductController = {
   createProduct,
   getAllProducts,
+  getNewProducts,
   getSingleProduct,
   updateProduct,
   deleteProduct,

@@ -5,9 +5,11 @@ import { ProductController } from './products.controller';
 
 const router = express.Router();
 
+router.get('/latest', ProductController.getNewProducts);
 router.get('/:id', ProductController.getSingleProduct);
 router.post('', auth(ENUM_USER_ROLE.ADMIN), ProductController.createProduct);
 router.get('', ProductController.getAllProducts);
+
 router.patch(
   '/:id',
   auth(ENUM_USER_ROLE.ADMIN),
