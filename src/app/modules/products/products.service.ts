@@ -86,8 +86,24 @@ const getAllProducts = async (
   const whereConditions =
     andConditions.length > 0 ? { $and: andConditions } : {};
 
-  const result = await Products.find(whereConditions)
-    .populate('addedBy')
+  // Use aggregation to join with the Review collection and calculate average ratings
+  const result = await Products.aggregate([
+    { $match: whereConditions },
+    {
+      $lookup: {
+        from: 'reviews', // The name of the review collection
+        localField: '_id',
+        foreignField: 'productId', // Assuming `productId` in Review links to the Product
+        as: 'reviews',
+      },
+    },
+    {
+      $addFields: {
+        averageRating: { $avg: '$reviews.rating' }, // Calculate average of the `rating` field
+        reviewCount: { $size: '$reviews' },
+      },
+    },
+  ])
     .sort(sortConditions)
     .skip(skip)
     .limit(limit);
@@ -108,7 +124,22 @@ const getNewProducts = async (): Promise<IGenericResponse<IProducts[]>> => {
   // Sort by createdAt field in descending order (newest first) and limit to 10 products
   const sortConditions: { [key: string]: SortOrder } = { createdAt: 'desc' }; // Sort by the newest created product
 
-  const result = await Products.find()
+  const result = await Products.aggregate([
+    {
+      $lookup: {
+        from: 'reviews', // The name of the review collection
+        localField: '_id',
+        foreignField: 'productId', // Assuming `productId` in Review links to the Product
+        as: 'reviews',
+      },
+    },
+    {
+      $addFields: {
+        averageRating: { $avg: '$reviews.rating' }, // Calculate average of the `rating` field
+        reviewCount: { $size: '$reviews' },
+      },
+    },
+  ])
     .sort(sortConditions) // Sort by the creation date
     .limit(10); // Limit the results to 10 products
 
