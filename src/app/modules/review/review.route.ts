@@ -8,6 +8,7 @@ const router = express.Router();
 /* router.get('/latest', ProductController.getNewProducts);
 router.get('/:id', ProductController.getSingleProduct); */
 router.post('', auth(ENUM_USER_ROLE.USER), ReviewController.createReview);
+
 router.get('/product/:id', ReviewController.getReviewsOfSingleProduct);
 // router.get('', ProductController.getAllProducts);
 
