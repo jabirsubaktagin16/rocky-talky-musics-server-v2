@@ -33,13 +33,13 @@ const getReviewsOfSingleUser = async (
   return result;
 };
 
-const getReviewsOfSingleProduct = async (id: string): Promise<any> => {
+const getReviewsOfSingleProduct = async (id: string): Promise<IReview[]> => {
   const result = await Review.aggregate([
     // Match the reviews for the specific product
     {
       $match: { productId: new mongoose.Types.ObjectId(id) },
     },
-    // Lookup to populate userId with user data from the users collection
+    // Lookup to populate userId with user data from users collection
     {
       $lookup: {
         from: 'users', // The users collection name
@@ -55,14 +55,15 @@ const getReviewsOfSingleProduct = async (id: string): Promise<any> => {
         ],
       },
     },
+
     // Unwind the reviews array to process individual reviews
     {
       $unwind: {
         path: '$userId', // Unwind user data into review
-        preserveNullAndEmptyArrays: true, // Preserve reviews even if user data is not found
+        preserveNullAndEmptyArrays: true, // This will preserve reviews that have no user data
       },
     },
-    // Group to calculate aggregates for the product
+    // Add fields to calculate star count, total reviews, and average rating
     {
       $group: {
         _id: '$productId', // Group by productId to get aggregates for that product
@@ -82,7 +83,7 @@ const getReviewsOfSingleProduct = async (id: string): Promise<any> => {
         fiveStarCount: {
           $sum: { $cond: [{ $eq: ['$rating', 5] }, 1, 0] },
         },
-        // Calculate the total sum of ratings to compute the average
+        // Calculate the total sum of ratings to calculate average
         totalRating: { $sum: '$rating' },
         reviews: { $push: '$$ROOT' }, // Push the entire review document into the reviews array
       },
@@ -101,30 +102,24 @@ const getReviewsOfSingleProduct = async (id: string): Promise<any> => {
     },
   ]);
 
-  // Check if result is empty and return default values
-  if (result.length === 0) {
-    return {
-      reviews: [],
-      totalReviews: 0,
-      averageRating: 0,
-      oneStarCount: 0,
-      twoStarCount: 0,
-      threeStarCount: 0,
-      fourStarCount: 0,
-      fiveStarCount: 0,
-    };
+  // If no reviews found, throw an error
+  if (!result || result.length === 0) {
+    throw new ApiError(
+      httpStatus.NOT_FOUND,
+      'Reviews Not Found for the product',
+    );
   }
 
   // Return the review statistics and the list of reviews with populated userId
   return {
-    reviews: result[0].reviews || [],
-    totalReviews: result[0].totalReviews || 0,
-    averageRating: result[0].averageRating || 0,
-    oneStarCount: result[0].oneStarCount || 0,
-    twoStarCount: result[0].twoStarCount || 0,
-    threeStarCount: result[0].threeStarCount || 0,
-    fourStarCount: result[0].fourStarCount || 0,
-    fiveStarCount: result[0].fiveStarCount || 0,
+    reviews: result[0].reviews, // Reviews list with populated userId
+    totalReviews: result[0].totalReviews,
+    averageRating: result[0].averageRating,
+    oneStarCount: result[0].oneStarCount,
+    twoStarCount: result[0].twoStarCount,
+    threeStarCount: result[0].threeStarCount,
+    fourStarCount: result[0].fourStarCount,
+    fiveStarCount: result[0].fiveStarCount,
   };
 };
 
