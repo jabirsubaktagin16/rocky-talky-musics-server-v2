@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import httpStatus from 'http-status';
-import { Secret } from 'jsonwebtoken';
+import { Secret, TokenExpiredError } from 'jsonwebtoken';
 import config from '../../config';
 import ApiError from '../../errors/ApiError';
 import { JWTHelper } from '../../helpers/jwtHelper';
@@ -19,7 +19,17 @@ const auth =
 
       let verifiedUser = null;
 
-      verifiedUser = JWTHelper.verifyToken(token, config.jwt.secret as Secret);
+      try {
+        verifiedUser = JWTHelper.verifyToken(
+          token,
+          config.jwt.secret as Secret,
+        );
+      } catch (error) {
+        if (error instanceof TokenExpiredError) {
+          throw new ApiError(httpStatus.UNAUTHORIZED, 'JWT token has expired');
+        }
+        throw new ApiError(httpStatus.UNAUTHORIZED, 'Invalid JWT token');
+      }
 
       req.user = verifiedUser;
 

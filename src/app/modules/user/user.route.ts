@@ -22,7 +22,11 @@ router.patch(
   UserController.updateMyProfile,
 );
 
-router.patch('/:id', auth(ENUM_USER_ROLE.ADMIN), UserController.updateUser);
+router.patch(
+  '/update/:id',
+  auth(ENUM_USER_ROLE.ADMIN),
+  UserController.updateUser,
+);
 
 router.delete('/:id', auth(ENUM_USER_ROLE.ADMIN), UserController.deleteUser);
 
